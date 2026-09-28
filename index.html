@@ -11,12 +11,14 @@
   Motivo: com mais de uma conta Google aberta no navegador, o Google troca o
   endereço do app por /macros/u/1/... e mostra "Não foi possível abrir o arquivo".
   Vindo de um endereço fora do Google, o navegador abre o /exec correto.
-  Esta página não guarda nem envia dados: só repassa ?c=...&tipo=... ao app.
+  Esta página não guarda nem envia dados: só repassa ?ciencia=...&tipo=... ao app.
+  Aceita também o formato antigo ?c=... ("c" é nome reservado do Apps Script e era barrado).
 -->
 <script>
   var APP = 'https://script.google.com/macros/s/AKfycbySI7M_-9BgO5kE0lZK99rKFk5tfPOyB96jOJ8uPrJFcTaMgmoCRgxIPJNK_6KQWRs-9g/exec';
-  var q = location.search;
-  var valido = /^\?c=[0-9a-f]{32}&tipo=(plano|final)$/.test(q);
+  var m = location.search.match(/^\?(?:ciencia|c)=([0-9a-f]{32})&tipo=(plano|final)$/);
+  var valido = !!m;
+  var q = valido ? '?ciencia=' + m[1] + '&tipo=' + m[2] : '';
   if (valido) location.replace(APP + q);
 </script>
 <style>
