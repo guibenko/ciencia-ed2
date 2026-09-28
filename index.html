@@ -5,53 +5,121 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
-<title>Estágio Docência II — registrando ciência</title>
+<title>Estágio Docência II — ciência do orientador</title>
 <!--
-  Página-ponte do link de ciência do orientador (Estágio Docência II · UFT).
-  Motivo: com mais de uma conta Google aberta no navegador, o Google troca o
-  endereço do app por /macros/u/1/... e mostra "Não foi possível abrir o arquivo".
-  Vindo de um endereço fora do Google, o navegador abre o /exec correto.
-  Esta página não guarda nem envia dados: só repassa ?ciencia=...&tipo=... ao app.
-  Aceita também o formato antigo ?c=... ("c" é nome reservado do Apps Script e era barrado).
+  Página do botão "Estou de acordo" (ciência do orientador · Estágio Docência II · UFT).
+  Por que existe: com mais de uma conta Google aberta no navegador, a página do Apps Script
+  é redirecionada para /macros/u/1/... e mostra "Não foi possível abrir o arquivo" (às vezes
+  depois de já ter registrado). Aqui o registro é feito por fetch SEM cookies (?fmt=json),
+  e o agradecimento é mostrado nesta própria página — o navegador não abre a página do Google.
+  Não guarda nem envia dados além do código do link. Aceita ?ciencia=... e o antigo ?c=...
 -->
-<script>
-  var APP = 'https://script.google.com/macros/s/AKfycbySI7M_-9BgO5kE0lZK99rKFk5tfPOyB96jOJ8uPrJFcTaMgmoCRgxIPJNK_6KQWRs-9g/exec';
-  var m = location.search.match(/^\?(?:ciencia|c)=([0-9a-f]{32})&tipo=(plano|final)$/);
-  var valido = !!m;
-  var q = valido ? '?ciencia=' + m[1] + '&tipo=' + m[2] : '';
-  if (valido) location.replace(APP + q);
-</script>
 <style>
-  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
-         background: #F4F6FA; font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #14213D; }
-  .card { max-width: 30rem; margin: 1rem; padding: 2rem 1.6rem; background: #fff; border: 1px solid #D6DDE8;
-          border-radius: 14px; text-align: center; box-shadow: 0 6px 24px rgba(20,33,61,.08); }
-  .spin { width: 36px; height: 36px; margin: 0 auto 1rem; border: 4px solid #E4E9F1; border-top-color: #E6A817;
-          border-radius: 50%; animation: g 0.9s linear infinite; }
-  @keyframes g { to { transform: rotate(360deg); } }
-  a { color: #14213D; font-weight: 600; }
-  small { color: #6B7690; }
+  :root { --tinta:#14213D; --suave:#3E4A63; --cinza:#6B7690; --borda:#D6DDE8; --fundo:#F4F6FA; }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; background:var(--fundo); padding:8vh 1rem;
+         font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--tinta); }
+  .card { max-width:34rem; margin:0 auto; background:#fff; border:1px solid var(--borda); border-radius:14px;
+          overflow:hidden; box-shadow:0 6px 24px rgba(20,33,61,.08); }
+  .topo { background:var(--tinta); color:#fff; padding:1.1rem 1.6rem; font:600 12px system-ui;
+          letter-spacing:.08em; text-transform:uppercase; }
+  .corpo { padding:2rem 1.6rem 1.6rem; text-align:center; }
+  .icone { width:64px; height:64px; margin:0 auto 1rem; border-radius:50%; display:flex;
+           align-items:center; justify-content:center; }
+  .ok { background:#E3F4EA; } .erro { background:#FDECEC; }
+  .spin { width:36px; height:36px; margin:.5rem auto 1rem; border:4px solid #E4E9F1; border-top-color:#E6A817;
+          border-radius:50%; animation:g .9s linear infinite; }
+  @keyframes g { to { transform:rotate(360deg); } }
+  h1 { font-size:1.45rem; line-height:1.3; margin:0 0 .5rem; }
+  p { margin:0; color:var(--suave); }
+  .caixa { margin:0 1.6rem; padding:.6rem 1rem; background:#F8FAFC; border:1px solid #E4E9F1; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; font-size:.95rem; }
+  td { padding:.45rem 0; vertical-align:top; } td:first-child { color:var(--cinza); width:9rem; } td:last-child { font-weight:600; }
+  .nota { margin:1.2rem 1.6rem 0; font-size:.95rem; }
+  .rodape { margin:1.4rem 1.6rem 1.6rem; padding-top:1rem; border-top:1px solid #E4E9F1; color:var(--cinza); font-size:.88rem; }
+  a.botao { display:inline-block; margin-top:1rem; background:#E6A817; color:var(--tinta); padding:10px 18px;
+            border-radius:6px; text-decoration:none; font-weight:600; }
+  [hidden] { display:none !important; }
 </style>
 </head>
 <body>
   <div class="card">
-    <div class="spin" id="spin"></div>
-    <h1 style="font-size:1.25rem;margin:0 0 .5rem" id="titulo">Registrando sua ciência…</h1>
-    <p style="margin:0 0 1rem" id="texto">Aguarde um instante; você será levado(a) à página de confirmação.</p>
-    <p style="margin:0"><a id="link" href="#">Se a página não abrir sozinha, clique aqui</a></p>
-    <p style="margin:1.2rem 0 0"><small>Estágio Docência II · Mestrado Agroenergia Digital — UFT</small></p>
+    <div class="topo" id="topo">Estágio Docência II · Mestrado Agroenergia Digital — UFT</div>
+
+    <div id="carregando" class="corpo">
+      <div class="spin"></div>
+      <h1>Registrando sua ciência…</h1>
+      <p>Só um instante.</p>
+    </div>
+
+    <div id="sucesso" hidden>
+      <div class="corpo">
+        <div class="icone ok"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1E8E4E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+        <h1 id="titulo">Ciência registrada com sucesso</h1>
+        <p>Muito obrigado, <b id="orientador"></b>!<br>Deu tudo certo. Nenhuma outra ação é necessária.</p>
+      </div>
+      <div class="caixa"><table>
+        <tr><td>Orientando(a)</td><td id="aluno"></td></tr>
+        <tr><td>Documento</td><td id="documento"></td></tr>
+        <tr><td>Registrada em</td><td id="quando"></td></tr>
+      </table></div>
+      <p class="nota">A coordenação foi avisada automaticamente. Se quiser sugerir algum ajuste, basta
+        responder ao e-mail que trouxe você até aqui. Pode fechar esta página.</p>
+      <p class="rodape" id="coordenador">Prof. Dr. Guilherme Benko de Siqueira<br>Coordenação de Estágio Docência II</p>
+    </div>
+
+    <div id="falha" class="corpo" hidden>
+      <div class="icone erro"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="3" stroke-linecap="round"><path d="M12 7v6M12 17h.01"/></svg></div>
+      <h1 id="falhaTitulo">Não foi possível registrar</h1>
+      <p id="falhaTexto"></p>
+      <a class="botao" id="falhaLink" href="#" hidden>Tentar pelo endereço direto</a>
+      <p id="falhaDica" style="margin-top:.8rem;font-size:.85rem;color:var(--cinza)" hidden>Se aparecer a mensagem do Google Drive
+        "Não foi possível abrir o arquivo", abra o endereço numa <b>janela anônima</b>
+        (acontece quando há mais de uma conta Google aberta no navegador).</p>
+    </div>
   </div>
-  <script>
-    if (valido) {
-      document.getElementById('link').href = APP + q;
-    } else {
-      document.getElementById('spin').style.display = 'none';
-      document.getElementById('titulo').textContent = 'Link incompleto';
-      document.getElementById('texto').textContent =
-        'Este endereço não está completo. Abra novamente o botão "Estou de acordo" do e-mail recebido.';
-      document.getElementById('link').style.display = 'none';
+
+<script>
+(function () {
+  var APP = 'https://script.google.com/macros/s/AKfycbySI7M_-9BgO5kE0lZK99rKFk5tfPOyB96jOJ8uPrJFcTaMgmoCRgxIPJNK_6KQWRs-9g/exec';
+  var m = location.search.match(/^\?(?:ciencia|c)=([0-9a-f]{32})&tipo=(plano|final)$/);
+  function $(id) { return document.getElementById(id); }
+  function mostrar(id) { ['carregando', 'sucesso', 'falha'].forEach(function (x) { $(x).hidden = (x !== id); }); }
+  function falha(titulo, texto, comLink) {
+    $('falhaTitulo').textContent = titulo;
+    $('falhaTexto').textContent = texto;
+    if (comLink && m) {
+      $('falhaLink').href = APP + '?ciencia=' + m[1] + '&tipo=' + m[2];
+      $('falhaLink').hidden = false; $('falhaDica').hidden = false;
     }
-  </script>
-  <noscript><p style="text-align:center">Ative o JavaScript ou use o endereço em texto que veio no e-mail.</p></noscript>
+    mostrar('falha');
+  }
+  if (!m) {
+    falha('Link incompleto', 'Este endereço não está completo. Abra novamente o botão "Estou de acordo" do e-mail recebido.', false);
+    return;
+  }
+  // Sem cookies: o Google trata o pedido como anônimo e não redireciona para /macros/u/1/.
+  fetch(APP + '?ciencia=' + m[1] + '&tipo=' + m[2] + '&fmt=json', { credentials: 'omit', cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (!d || !d.ok) { falha('Não foi possível registrar', (d && d.erro) || 'Resposta inesperada do sistema.', !d || !/inválido/.test(d.erro || '')); return; }
+      $('titulo').textContent = d.jaCiente ? 'Sua ciência já estava registrada' : 'Ciência registrada com sucesso';
+      $('orientador').textContent = d.orientador;
+      $('aluno').textContent = d.aluno;
+      $('documento').textContent = d.documento;
+      $('quando').textContent = d.quando;
+      if (d.disciplina) $('topo').textContent = d.disciplina + ' · ' + d.semestre + ' · ' + d.programa;
+      if (d.coordenador) $('coordenador').innerHTML = '';
+      if (d.coordenador) { $('coordenador').appendChild(document.createTextNode(d.coordenador));
+        $('coordenador').appendChild(document.createElement('br'));
+        $('coordenador').appendChild(document.createTextNode('Coordenação de ' + d.disciplina)); }
+      document.title = 'Ciência registrada — ' + (d.disciplina || 'Estágio Docência II');
+      mostrar('sucesso');
+    })
+    .catch(function () {
+      falha('Não foi possível falar com o sistema', 'A conexão falhou. Tente pelo botão abaixo.', true);
+    });
+})();
+</script>
 </body>
 </html>
